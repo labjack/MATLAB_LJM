@@ -1,5 +1,5 @@
 %
-% Demonstrates how to use the eNames (LJM_eNames) function using .NET.
+% Demonstrates how to read configuration settings on a LabJack using .NET.
 %
 % support@labjack.com
 %
@@ -20,30 +20,26 @@ try
     %[ljmError, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctANY, 'ANY', handle);
     
     showDeviceInfo(handle);
-    
-    %Setup and call eNames to write/read values.
-    numFrames = 3;
+
+    %Setup and call eReadNames to read configuration values.
+    numFrames = 10;
     aNames = NET.createArray('System.String', numFrames);
-    aNames(1) = 'DAC0';
-    aNames(2) = 'TEST_UINT16';
-    aNames(3) = 'TEST_UINT16';
-    aWrites = NET.createArray('System.Int32', numFrames);
-    aWrites(1) = LJM_CONSTANTS.WRITE;
-    aWrites(2) = LJM_CONSTANTS.WRITE;
-    aWrites(3) = LJM_CONSTANTS.READ;
-    aNumValues = NET.createArray('System.Int32', numFrames);
-    aNumValues(1) = 1;
-    aNumValues(2) = 1;
-    aNumValues(3) = 1;
+    aNames(1) = 'PRODUCT_ID';
+    aNames(2) = 'HARDWARE_VERSION';
+    aNames(3) = 'FIRMWARE_VERSION';
+    aNames(4) = 'BOOTLOADER_VERSION';
+    aNames(5) = 'WIFI_VERSION';
+    aNames(6) = 'SERIAL_NUMBER';
+    aNames(7) = 'POWER_ETHERNET_DEFAULT';
+    aNames(8) = 'POWER_WIFI_DEFAULT';
+    aNames(9) = 'POWER_AIN_DEFAULT';
+    aNames(10) = 'POWER_LED_DEFAULT';
     aValues = NET.createArray('System.Double', numFrames);
-    aValues(1) = 2.5; %write 2.5 V
-    aValues(2) = 12345; %write 12345
-    aValues(3) = 0; %read
-    LabJack.LJM.eNames(handle, numFrames, aNames, aWrites, aNumValues, aValues, 0);
-    
-    disp('eNames results:')
+    LabJack.LJM.eReadNames(handle, numFrames, aNames, aValues, 0);
+
+    disp('Configuration settings:')
     for i=1:numFrames,
-        disp(['  Name: ' char(aNames(i)) ', write: ' num2str(aWrites(i)) ', value: ' num2str(aValues(i))])
+        disp([char(aNames(i)) ', value: ' num2str(aValues(i))])
     end
 catch e
     showErrorMessage(e)

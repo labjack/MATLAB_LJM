@@ -1,6 +1,6 @@
 %
-% Demonstrates how to use the eWriteAddress (LJM_eWriteAddress) function
-% using .NET.
+% Demonstrates how to use the eWriteAddress (LJM_eWriteAddress) function using
+% .NET.
 %
 % support@labjack.com
 %
@@ -17,11 +17,11 @@ handle = 0;
 
 try
     %Open first found LabJack
-    [ljmerror, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctUSB, 'ANY', handle);
-    %[ljmError, handle] = LabJack.LJM.OpenS('ANY', 'USB', 'ANY', handle);
+    [ljmError, handle] = LabJack.LJM.OpenS('ANY', 'USB', 'ANY', handle);
+    %[ljmError, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctUSB, 'ANY', handle);
     
     showDeviceInfo(handle);
-
+    
     %Setup and call eWriteAddress to write a value to the LabJack.
     address = 1000; %DAC0
     dataType = LJM_CONSTANTS.FLOAT32;

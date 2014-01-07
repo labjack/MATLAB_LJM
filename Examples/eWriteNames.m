@@ -1,6 +1,5 @@
 %
-% Demonstrates how to use the eWriteNames (LJM_eWriteNames) function using
-% .NET.
+% Demonstrates how to use the eWriteNames (LJM_eWriteNames) function using .NET.
 %
 % support@labjack.com
 %
@@ -17,17 +16,17 @@ handle = 0;
 
 try
     %Open first found LabJack
-    [ljmerror, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctANY, 'ANY', handle);
-    %[ljmError, handle] = LabJack.LJM.OpenS('ANY', 'ANY', 'ANY', handle);
+    [ljmError, handle] = LabJack.LJM.OpenS('ANY', 'ANY', 'ANY', handle);
+    %[ljmError, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctANY, 'ANY', handle);
     
     showDeviceInfo(handle);
     
     %Setup and call eWriteNames to write values.
     numFrames = 2;
-    aNames = NET.createArray('System.String', 2);
+    aNames = NET.createArray('System.String', numFrames);
     aNames(1) = 'DAC0';
     aNames(2) = 'TEST_UINT16';
-    aValues = NET.createArray('System.Double', 2);
+    aValues = NET.createArray('System.Double', numFrames);
     aValues(1) = 2.5; %2.5 V
     aValues(2) = 12345; %12345
     LabJack.LJM.eWriteNames(handle, numFrames, aNames, aValues, 0);

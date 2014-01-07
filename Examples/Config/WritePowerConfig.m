@@ -1,5 +1,5 @@
 %
-% Demonstrates how to use the eNames (LJM_eNames) function using .NET.
+% Demonstrates how to configure default power settings on a LabJack .NET.
 %
 % support@labjack.com
 %
@@ -21,29 +21,23 @@ try
     
     showDeviceInfo(handle);
     
-    %Setup and call eNames to write/read values.
-    numFrames = 3;
+    %Setup and call eWriteNames to write configuration values.
+    numFrames = 4;
     aNames = NET.createArray('System.String', numFrames);
-    aNames(1) = 'DAC0';
-    aNames(2) = 'TEST_UINT16';
-    aNames(3) = 'TEST_UINT16';
-    aWrites = NET.createArray('System.Int32', numFrames);
-    aWrites(1) = LJM_CONSTANTS.WRITE;
-    aWrites(2) = LJM_CONSTANTS.WRITE;
-    aWrites(3) = LJM_CONSTANTS.READ;
-    aNumValues = NET.createArray('System.Int32', numFrames);
-    aNumValues(1) = 1;
-    aNumValues(2) = 1;
-    aNumValues(3) = 1;
+    aNames(1) = 'POWER_ETHERNET_DEFAULT';
+    aNames(2) = 'POWER_WIFI_DEFAULT';
+    aNames(3) = 'POWER_AIN_DEFAULT';
+    aNames(4) = 'POWER_LED_DEFAULT';
     aValues = NET.createArray('System.Double', numFrames);
-    aValues(1) = 2.5; %write 2.5 V
-    aValues(2) = 12345; %write 12345
-    aValues(3) = 0; %read
-    LabJack.LJM.eNames(handle, numFrames, aNames, aWrites, aNumValues, aValues, 0);
-    
-    disp('eNames results:')
+    aValues(1) = 1; %Ethernet on
+    aValues(2) = 0; %WiFi off
+    aValues(3) = 1; %AIN on
+    aValues(4) = 1; %LED on
+    LabJack.LJM.eWriteNames(handle, numFrames, aNames, aValues, 0);
+
+    disp('Set configuration settings:');
     for i=1:numFrames,
-        disp(['  Name: ' char(aNames(i)) ', write: ' num2str(aWrites(i)) ', value: ' num2str(aValues(i))])
+        disp([char(aNames(i)) ' : ' num2str(aValues(i))])
     end
 catch e
     showErrorMessage(e)

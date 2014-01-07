@@ -1,6 +1,5 @@
 %
-% Demonstrates how to use the eAddresses (LJM_eAddresses) function using
-% .NET.
+% Demonstrates how to use the eAddresses (LJM_eAddresses) function using .NET.
 %
 % support@labjack.com
 %
@@ -17,30 +16,30 @@ handle = 0;
 
 try
     %Open first found LabJack
-    [ljmError, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctANY, 'ANY', handle);
-    %[ljmError, handle] = LabJack.LJM.OpenS('ANY', 'ANY', 'ANY', handle);
+    [ljmError, handle] = LabJack.LJM.OpenS('ANY', 'ANY', 'ANY', handle);
+    %[ljmError, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctANY, 'ANY', handle);
     
     showDeviceInfo(handle);
 
     %Setup and call eAddresses to write/read values.
     numFrames = 3;
-    aAddresses = NET.createArray('System.Int32', 3);
+    aAddresses = NET.createArray('System.Int32', numFrames);
     aAddresses(1) = 1000; %DAC0
     aAddresses(2) = 55110; %TEST_UINT16
     aAddresses(3) = 55110; %TEST_UINT16
-    aTypes = NET.createArray('System.Int32', 3);
+    aTypes = NET.createArray('System.Int32', numFrames);
     aTypes(1) = LJM_CONSTANTS.FLOAT32;
     aTypes(2) = LJM_CONSTANTS.UINT16;
     aTypes(3) = LJM_CONSTANTS.UINT16;
-    aWrites = NET.createArray('System.Int32', 3);
+    aWrites = NET.createArray('System.Int32', numFrames);
     aWrites(1) = LJM_CONSTANTS.WRITE;
     aWrites(2) = LJM_CONSTANTS.WRITE;
     aWrites(3) = LJM_CONSTANTS.READ;
-    aNumValues = NET.createArray('System.Int32', 3);
+    aNumValues = NET.createArray('System.Int32', numFrames);
     aNumValues(1) = 1;
     aNumValues(2) = 1;
     aNumValues(3) = 1;
-    aValues = NET.createArray('System.Double', 3);
+    aValues = NET.createArray('System.Double', numFrames);
     aValues(1) = 2.5; %write 2.5 V
     aValues(2) = 12345; %write 12345
     aValues(3) = 0; %read

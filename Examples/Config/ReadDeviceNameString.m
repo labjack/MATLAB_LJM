@@ -1,5 +1,5 @@
 %
-% Demonstrates how to use the eReadName (LJM_eReadName) function using .NET.
+% Demonstrates how to read the device name string from a LabJack using .NET.
 %
 % support@labjack.com
 %
@@ -21,12 +21,11 @@ try
     
     showDeviceInfo(handle);
     
-    %Setup and call eReadName to read a value.
-    name = 'SERIAL_NUMBER';
-    [ljmError, value] = LabJack.LJM.eReadName(handle, name, 0);
-    
-    disp('eReadName result:')
-    disp(['  Name: ' name ', value: ' num2str(value)])
+    %Call eReadNameString to read the name string.
+    str = '';
+    [ljmError, str] = LabJack.LJM.eReadNameString(handle, 'DEVICE_NAME_DEFAULT', str);
+
+    disp(['  Device name default : ' str])
 catch e
     showErrorMessage(e)
 end

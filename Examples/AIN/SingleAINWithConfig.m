@@ -1,5 +1,6 @@
 %
-% Demonstrates how to use the eNames (LJM_eNames) function using .NET.
+% Demonstrates configuring and reading a single analog input (AIN) with a
+% LabJack using .NET.
 %
 % support@labjack.com
 %
@@ -21,30 +22,28 @@ try
     
     showDeviceInfo(handle);
     
-    %Setup and call eNames to write/read values.
+    %Setup and call eWriteNames to configure AIN0.
     numFrames = 3;
     aNames = NET.createArray('System.String', numFrames);
-    aNames(1) = 'DAC0';
-    aNames(2) = 'TEST_UINT16';
-    aNames(3) = 'TEST_UINT16';
-    aWrites = NET.createArray('System.Int32', numFrames);
-    aWrites(1) = LJM_CONSTANTS.WRITE;
-    aWrites(2) = LJM_CONSTANTS.WRITE;
-    aWrites(3) = LJM_CONSTANTS.READ;
-    aNumValues = NET.createArray('System.Int32', numFrames);
-    aNumValues(1) = 1;
-    aNumValues(2) = 1;
-    aNumValues(3) = 1;
+    aNames(1) = 'AIN0_NEGATIVE_CH';
+    aNames(2) = 'AIN0_RANGE';
+    aNames(3) = 'AIN0_RESOLUTION_INDEX';
     aValues = NET.createArray('System.Double', numFrames);
-    aValues(1) = 2.5; %write 2.5 V
-    aValues(2) = 12345; %write 12345
-    aValues(3) = 0; %read
-    LabJack.LJM.eNames(handle, numFrames, aNames, aWrites, aNumValues, aValues, 0);
-    
-    disp('eNames results:')
+    aValues(1) = 199; %single-ended
+    aValues(2) = 10;  %+-10 V
+    aValues(3) = 0;   %default
+    LabJack.LJM.eWriteNames(handle, numFrames, aNames, aValues, 0);
+
+    disp('Set configuration:');
     for i=1:numFrames,
-        disp(['  Name: ' char(aNames(i)) ', write: ' num2str(aWrites(i)) ', value: ' num2str(aValues(i))])
+        disp(['  ' char(aNames(i)) ': value: ' num2str(aValues(i))])
     end
+
+    %Setup and call eReadName to read from AIN0.
+    name = 'AIN0';
+    [ljmError, value] = LabJack.LJM.eReadName(handle, name, 0);
+
+    disp([name ': ' num2str(value) ' V'])
 catch e
     showErrorMessage(e)
 end

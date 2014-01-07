@@ -1,5 +1,5 @@
 %
-% Demonstrates how to use the eReadName (LJM_eReadName) function using .NET.
+% Demonstrates reading a single analog input (AIN) from a LabJack using .NET.
 %
 % support@labjack.com
 %
@@ -21,12 +21,11 @@ try
     
     showDeviceInfo(handle);
     
-    %Setup and call eReadName to read a value.
-    name = 'SERIAL_NUMBER';
+    %Setup and call eReadName to read from AIN0.
+    name = 'AIN0';
     [ljmError, value] = LabJack.LJM.eReadName(handle, name, 0);
-    
-    disp('eReadName result:')
-    disp(['  Name: ' name ', value: ' num2str(value)])
+
+    disp([name ': ' num2str(value) ' V'])
 catch e
     showErrorMessage(e)
 end

@@ -1,6 +1,6 @@
 %
-% Demonstrates how to use the eReadAddresses (LJM_eReadAddresses) function
-% using .NET.
+% Demonstrates how to use the eReadAddresses (LJM_eReadAddresses) function using
+% .NET.
 %
 % support@labjack.com
 %
@@ -17,22 +17,22 @@ handle = 0;
 
 try
     %Open first found LabJack
-    [ljmerror, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctANY, 'ANY', handle);
-    %[ljmError, handle] = LabJack.LJM.OpenS('ANY', 'ANY', 'ANY', handle);
+    [ljmError, handle] = LabJack.LJM.OpenS('ANY', 'ANY', 'ANY', handle);
+    %[ljmError, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctANY, 'ANY', handle);
     
     showDeviceInfo(handle);
     
     %Setup and call eReadAddresses to read values.
     numFrames = 3;
-    aAddresses = NET.createArray('System.Int32', 3);
+    aAddresses = NET.createArray('System.Int32', numFrames);
     aAddresses(1) = 60028; %serial number
     aAddresses(2) = 60000; %product ID
     aAddresses(3) = 60004; %firmware version
-    aTypes = NET.createArray('System.Int32', 3);
+    aTypes = NET.createArray('System.Int32', numFrames);
     aTypes(1) = LJM_CONSTANTS.UINT32;
     aTypes(2) = LJM_CONSTANTS.FLOAT32;
     aTypes(3) = LJM_CONSTANTS.FLOAT32;
-    aValues = NET.createArray('System.Double', 3);
+    aValues = NET.createArray('System.Double', numFrames);
     LabJack.LJM.eReadAddresses(handle, numFrames, aAddresses, aTypes, aValues, 0);
     
     disp('eReadAddresses results:')

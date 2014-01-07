@@ -1,6 +1,5 @@
 %
-% Demonstrates how to use the eWriteName (LJM_eWriteName) function using
-% .NET.
+% Demonstrates how to use the eWriteName (LJM_eWriteName) function using .NET.
 %
 % support@labjack.com
 %
@@ -17,8 +16,8 @@ handle = 0;
 
 try
     %Open first found LabJack
-    [ljmerror, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctANY, 'ANY', handle);
-    %[ljmError, handle] = LabJack.LJM.OpenS('ANY', 'ANY', 'ANY', handle);
+    [ljmError, handle] = LabJack.LJM.OpenS('ANY', 'ANY', 'ANY', handle);
+    %[ljmError, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctANY, 'ANY', handle);
     
     showDeviceInfo(handle);
     

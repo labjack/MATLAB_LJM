@@ -1,6 +1,6 @@
 %
-% Demonstrates how to use the eWriteAddresses (LJM_eWriteAddresses)
-% function using .NET.
+% Demonstrates how to use the eWriteAddresses (LJM_eWriteAddresses) function
+% using .NET.
 %
 % support@labjack.com
 %
@@ -17,20 +17,20 @@ handle = 0;
 
 try
     %Open first found LabJack
-    [ljmerror, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctANY, 'ANY', handle);
-    %[ljmError, handle] = LabJack.LJM.OpenS('ANY', 'ANY', 'ANY', handle);
+    [ljmError, handle] = LabJack.LJM.OpenS('ANY', 'ANY', 'ANY', handle);
+    %[ljmerror, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctANY, 'ANY', handle);
     
     showDeviceInfo(handle);
     
     %Setup and call eWriteAddresses to write values.
     numFrames = 2;
-    aAddresses = NET.createArray('System.Int32', 2);
+    aAddresses = NET.createArray('System.Int32', numFrames);
     aAddresses(1) = 1000; %DAC0
     aAddresses(2) = 55110; %TEST_UINT16
-    aTypes = NET.createArray('System.Int32', 2);
+    aTypes = NET.createArray('System.Int32', numFrames);
     aTypes(1) = LJM_CONSTANTS.FLOAT32;
     aTypes(2) = LJM_CONSTANTS.UINT16;
-    aValues = NET.createArray('System.Double', 2);
+    aValues = NET.createArray('System.Double', numFrames);
     aValues(1) = 2.5; %2.5 V
     aValues(2) = 12345;
     LabJack.LJM.eWriteAddresses(handle, numFrames, aAddresses, aTypes, aValues, 0);
