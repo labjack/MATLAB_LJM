@@ -22,32 +22,7 @@ try
     
     showDeviceInfo(handle);
     
-    %Setup and call eNames to write/read values.
-    numFrames = 3;
-    aNames = NET.createArray('System.String', numFrames);
-    aNames(1) = 'DAC0';
-    aNames(2) = 'TEST_UINT16';
-    aNames(3) = 'TEST_UINT16';
-    aWrites = NET.createArray('System.Int32', numFrames);
-    aWrites(1) = LJM_CONSTANTS.WRITE;
-    aWrites(2) = LJM_CONSTANTS.WRITE;
-    aWrites(3) = LJM_CONSTANTS.READ;
-    aNumValues = NET.createArray('System.Int32', numFrames);
-    aNumValues(1) = 1;
-    aNumValues(2) = 1;
-    aNumValues(3) = 1;
-    aValues = NET.createArray('System.Double', numFrames);
-    aValues(1) = 2.5; %write 2.5 V
-    aValues(2) = 12345; %write 12345
-    aValues(3) = 0; %read
-    LabJack.LJM.eNames(handle, numFrames, aNames, aWrites, aNumValues, aValues, 0);
     
-    disp('eNames results:')
-    for i=1:numFrames,
-        disp(['  Name: ' char(aNames(i)) ', write: ' num2str(aWrites(i)) ', value: ' num2str(aValues(i))])
-    end
-
-
     numIterations = 1000; %Number of iterations to perform in the loop
     
     %Analog input settings
@@ -139,7 +114,7 @@ try
         end
         disp(['    ' wrStr ' ' aNames(i)])
     end
-    disp('Beginning ' num2str(numIterations) ' iterations...');
+    disp(['Beginning ' num2str(numIterations) ' iterations...']);
     
     
     %Initialize time variables
@@ -148,30 +123,28 @@ try
     totalMS = 0;
     curMS = 0;
     
-    %%%%% Needs to be finished
-    Stopwatch sw;
-    freq = Stopwatch.Frequency;
+    tic;
     
     %eNames operations loop
     for i=1:numIterations,
-        sw = Stopwatch.StartNew();
-        LabJack.LJM.eNames(handle, numFrames, aNames, aWrites, aNumValues, aValues, ref errAddr);
-        sw.Stop();
+        st2 = tic;
+        LabJack.LJM.eNames(handle, numFrames, aNames, aWrites, aNumValues, aValues, 0);
         
-        curMS = sw.ElapsedTicks/(double)freq * 1000;
+        curMS = toc*1000(st2)
         if minMS == 0
             minMS = curMS;
         end
-        minMS = Math.Min(curMS, minMS);
-        maxMS = Math.Max(curMS, maxMS);
-        totalMS += curMS;
+        minMS = min(curMS, minMS);
+        maxMS = max(curMS, maxMS);
+        %totalMS += curMS;
     end
-    %%%%%%%%%%%%%%%%%
+    
+    totalMS = toc*1000;
     
     disp(['    ' num2str(numIterations) ' iterations performed:'])
     disp(['    Time taken: " num2str(totalMS) ' ms']);
     disp(['    Average time per iteration: ' num2str(totalMS/numIterations) ' ms'])
-    disp(['    Min / Max time for one iteration: ' num2str(minMS) ' ms / ' num2str(maxMS) ' ms')
+    disp(['    Min / Max time for one iteration: ' num2str(minMS) ' ms / ' num2str(maxMS) ' ms'])
     
     disp('Last eNames results:')
     for i=1:numFrames,
@@ -180,7 +153,7 @@ try
         else
             wrStr = 'WRITE';
         end
-        disp(['    ' aNames(i) ' ' wrStr ' value : ' + aValues(i));
+        disp(['    ' aNames(i) ' ' wrStr ' value : ' + aValues(i)]);
     end
 catch e
     showErrorMessage(e)

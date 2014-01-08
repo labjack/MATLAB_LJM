@@ -17,30 +17,28 @@ handle = 0;
 
 try
     %Open first found LabJack
-    [ljmError, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctANY, 'ANY', handle);
-    %[ljmError, handle] = LabJack.LJM.OpenS('ANY', 'ANY', 'ANY', handle);
+    [ljmError, handle] = LabJack.LJM.OpenS('ANY', 'ANY', 'ANY', handle);
+    %[ljmError, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctANY, 'ANY', handle);
     
     showDeviceInfo(handle);
     
     maxRequests = 50; %The number of eStreamRead calls to perform in the stream read loop
     
     %Stream Configuration
-    numAddresses = 4;
-    aScanListNames = NET.createArray('System.String', numAddresses);
+    numAddresses = 2;
+    aScanListNames = NET.createArray('System.String', numAddresses); %Scan list names to stream.
     aScanListNames(1) = 'AIN0';
     aScanListNames(2) = 'AIN1';
-    aScanListNames(3) = 'AIN2';
-    aScanListNames(4) = 'AIN3';
-    aScanList = NET.createArray('System.Int32', numAddresses);
+    aScanList = NET.createArray('System.Int32', numAddresses); %Scan list addresses to stream.
     aTypes = NET.createArray('System.Int32', numAddresses); %Dummy array for aTypes parameter
     LabJack.LJM.NamesToAddresses(numAddresses, aScanListNames, aScanList, aTypes);
-    scanRate = double(1000);
+    scanRate = double(1000); %Scans per second
     scansPerRead = int32(scanRate/2);
     %Stream reads will be stored in aData. Needs to be at least
     %NumAddresses*ScansPerRead in size.
     aData = NET.createArray('System.Double', numAddresses*scansPerRead);
     
-    %Configure scan list for single ended readings
+    %Configure the negative channels for single ended readings.
     aNames = NET.createArray('System.String', numAddresses);
     aValues = NET.createArray('System.Double', numAddresses);
     for i=1:numAddresses,
@@ -66,7 +64,7 @@ try
     tic
 
     try
-        disp(['Performing ' num2str(maxRequests) ' stream reads Hz.'])
+        disp(['Performing ' num2str(maxRequests) ' stream reads.'])
 
         totalScans = 0;
         curSkippedSamples = 0;
@@ -81,7 +79,7 @@ try
             %Missed samples occur after a device's stream buffer overflows and
             %are reported after auto-recover mode ends.
             
-            %Todo: ount the -9999.0
+            %Todo: Count the -9999.0 (below is test code for this)
             aData(1) = -9999.00;
             aData(2) = aData(1);
             aData(3) = aData(1);
@@ -108,11 +106,11 @@ try
     timeElapsed = toc;
     
     disp(['Total scans = ' num2str(totalScans)])
+    disp(['Skipped Scans = ' num2str(totalSkippedSamples/numAddresses)])
     disp(['Time Taken = ' num2str(timeElapsed) ' seconds'])
     disp(['LJM Scan Rate = ' num2str(scanRate) ' scans/second'])
     disp(['Timed Scan Rate = ' num2str(totalScans/timeElapsed) ' scans/second'])
     disp(['Sample Rate = ' num2str(numAddresses*totalScans/timeElapsed) ' samples/second'])
-    disp(['Skipped Scans = ' num2str(totalSkippedSamples/numAddresses)])
 
     disp('Stop Stream')
     LabJack.LJM.eStreamStop(handle);
