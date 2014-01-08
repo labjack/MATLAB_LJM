@@ -1,5 +1,5 @@
 %
-% Demonstrates how to read the ethernet MAC from a LabJack using .NET.
+% Demonstrates how to read the WiFi MAC from a LabJack using .NET.
 %
 % support@labjack.com
 %
@@ -21,11 +21,11 @@ try
     
     showDeviceInfo(handle);
     
-    %Call eAddresses to read the ethernet MAC. Note that we are reading a byte
-    %array which is the big endian binary representation of the 64-bit MAC.
+    %Call eAddresses to read the WiFi MAC. Note that we are reading a byte array
+    %which is the big endian binary representation of the 64-bit MAC.
     numFrames = 1;
     aAddresses = NET.createArray('System.Int32', numFrames);
-    aAddresses(1) = 60020;
+    aAddresses(1) = 60024;
     aTypes = NET.createArray('System.Int32', numFrames);
     aTypes(1) = LJM_CONSTANTS.BYTE;
     aWrites = NET.createArray('System.Int32', numFrames);
@@ -43,7 +43,7 @@ try
     %Convert big endian byte array to a 64-bit signed integer value
     [computerType, maxSize, endian] = computer;
     if endian == 'L'
-        macBytes = macBytes(end:-1:1);
+        macBytes = macBytes(end:-1:1)
     end
     macNumber = typecast(macBytes, 'int64');
     
@@ -51,7 +51,7 @@ try
     macString = '';
     [ljmError, macString] = LabJack.LJM.NumberToMAC(macNumber, macString);
     
-    disp(['Ethernet MAC : ' macNumber ' - ' macString])
+    disp(['WiFi MAC : ' macNumber ' - ' macString])
 catch e
     showErrorMessage(e)
 end

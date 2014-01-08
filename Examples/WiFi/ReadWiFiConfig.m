@@ -1,6 +1,5 @@
 %
-% Demonstrates how to set ethernet configuration settings on a LabJack using
-% .NET.
+% Demonstrates how to read the WiFi configuration from a LabJack using .NET.
 %
 % support@labjack.com
 %
@@ -22,31 +21,39 @@ try
     
     showDeviceInfo(handle);
     
-    %Setup and call eWriteNames to set the ethernet configuration.
-    numFrames = 4;
+    %Setup and call eReadNames to read WiFi configuration.
+    numFrames = 9;
     aNames = NET.createArray('System.String', numFrames);
-    aNames(1) = 'ETHERNET_IP_DEFAULT';
-    aNames(2) = 'ETHERNET_SUBNET_DEFAULT';
-    aNames(3) = 'ETHERNET_GATEWAY_DEFAULT';
-    aNames(4) = 'ETHERNET_DHCP_ENABLE_DEFAULT';
+    aNames(1) = 'WIFI_IP';
+    aNames(2) = 'WIFI_SUBNET';
+    aNames(3) = 'WIFI_GATEWAY';
+    aNames(4) = 'WIFI_DHCP_ENABLE';
+    aNames(5) = 'WIFI_IP_DEFAULT';
+    aNames(6) = 'WIFI_SUBNET_DEFAULT';
+    aNames(7) = 'WIFI_GATEWAY_DEFAULT';
+    aNames(8) = 'WIFI_DHCP_ENABLE_DEFAULT';
+    aNames(9) = 'WIFI_STATUS';
     aValues = NET.createArray('System.Double', numFrames);
-    [ljmError, aValues(1)] = LabJack.LJM.IPToNumber("192.168.1.207", 0);
-    [ljmError, aValues(2)] = LabJack.LJM.IPToNumber("255.255.255.0", 0);
-    [ljmError, aValues(3)] = LabJack.LJM.IPToNumber("192.168.1.1", 0);
-    aValues(4) = 1;
-    LabJack.LJM.eWriteNames(handle, numFrames, aNames, aValues, 0);
+    LabJack.LJM.eReadNames(handle, numFrames, aNames, aValues, 0);
     
-    disp('Set ethernet configuration:')
+    disp('Wifi configuration:')
     str = '';
     %Needs testing
     for i=1:numFrames,
-        if isempty(strFind(char(aNames(i)), 'ETHERNET_DHCP_ENABLE_DEFAULT')) %may not need char
+        if ~isempty(strFind(char(aNames(i)), 'WIFI_STATUS')) or ~isempty(strFind(char(aNames(i)), 'WIFI_DHCP_ENABLE')) %may not need char
+            disp(['    ' char(aNames(i)) ' : ' num2str(aValues(i))])
+        else
             [ljmError, str] = LabJack.LJM.NumberToIP(uint32(double(aValues(i))), str); %may not need to convert to double first
             disp(['    ' char(aNames(i)) " : " num2str(aValues(i)) " - " + str])
-        else
-            disp(['    ' char(aNames(i)) ' : ' num2str(aValues(i))])
         end
     end
+    
+    %Setup and call eReadNameString to read the WiFi SSID string.
+    name = 'WIFI_SSID';
+    str = '';
+    [ljmError, str] = LabJack.LJM.eReadNameString(handle, name, str);
+    
+    disp(['    ' name ' : ' str])
 catch e
     showErrorMessage(e)
 end

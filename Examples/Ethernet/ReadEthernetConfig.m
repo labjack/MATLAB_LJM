@@ -42,9 +42,9 @@ try
     for i=1:numFrames,
         if isempty(strFind(char(aNames(i)), 'ETHERNET_DHCP_ENABLE')) %may not need char
             [ljmError, str] = LabJack.LJM.NumberToIP(uint32(double(aValues(i))), str); %may not need to convert to double first
-            disp(['    ' char(aNames(i)) " : " num2str(aValues(i)) " - " + str]);
+            disp(['    ' char(aNames(i)) " : " num2str(aValues(i)) " - " + str])
         else
-            disp(['    ' char(aNames(i)) ' : ' num2str(aValues(i))]);
+            disp(['    ' char(aNames(i)) ' : ' num2str(aValues(i))])
         end
     end
 catch e
