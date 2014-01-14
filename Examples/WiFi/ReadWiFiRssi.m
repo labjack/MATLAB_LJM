@@ -24,7 +24,7 @@ try
     %Setup and call eReadName to read the WiFi RSSI.
     name = 'WIFI_RSSI';
     value = 0;
-    [ljmError, value] = LJM.eReadName(handle, name, value);
+    [ljmError, value] = LabJack.LJM.eReadName(handle, name, value);
     
     disp([name ' : '  num2str(value)]);
 catch e

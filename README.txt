@@ -1,11 +1,11 @@
 MATLAB - LJM .NET examples for Windows
-10/24/2013
+01/14/2014
 support@labjack.com
 
 
 This package contains MATLAB example scripts that demonstrate LabJack T7 usage
-using the MATLAB .NET interface and LJM .NET assembly. Examples were
-tested with MATLAB 7.9 (R2009b).
+using the MATLAB .NET interface and LJM .NET assembly. Examples were tested with
+MATLAB 7.9 (R2009b).
 
 
 Requirements:
@@ -22,11 +22,11 @@ Getting Started:
 First make sure that you have fulfilled the requirements and have extracted the
 example scripts somewhere on your computer.
 
-A simple way to get the example scripts running in MATLAB is to navigate
-to the extracted MATLAB_LJM folder in the "Current Folder" toolbar. Using the
-toolbar you can "Add to Path" MATLAB_LJM folders and scripts, and open and
-run scripts. Alternatively, you can use "File->Set Path" to add the
-MATLAB_LJM and subfolders to the path.
+A simple way to get the example scripts running in MATLAB is to navigate to the
+extracted MATLAB_LJM folder in the "Current Folder" toolbar. Using the toolbar
+you can "Add to Path" MATLAB_LJM folders and scripts, and open and run scripts.
+Alternatively, you can use "File->Set Path" to add the MATLAB_LJM and subfolders
+to the path.
 
 Once added to the path, you can run scripts by name in MATLAB. For example:
 
@@ -39,15 +39,15 @@ and showErrorMessage function scripts.
 
 Using the MATLAB .NET interface with the LJM .NET assembly:
 
-To use the LJM .NET assembly in MATLAB use the NET.addAssembly method
-and specify 'LabJack.LJM'.
+To use the LJM .NET assembly in MATLAB use the NET.addAssembly method and
+specify 'LabJack.LJM'.
 
 >> ljmAsm = NET.addAssembly('LabJack.LJM')
 
 That will make the LJM classes accessible in MATLAB. Methods, classes and enums
-are in the LabJack.LJM class. Information on the LJM .NET assembly can be
-found in the returned .NET assembly object from the NET.addAssembly call. For
-example, to get a list of classes type the following:
+are in the LabJack.LJM class. Information on the LJM .NET assembly can be found
+in the returned .NET assembly object from the NET.addAssembly call. For example,
+to get a list of classes type the following:
 
 >> disp(ljmAsm.Classes)
 

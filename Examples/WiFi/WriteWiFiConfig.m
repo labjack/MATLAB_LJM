@@ -28,36 +28,38 @@ try
     aNames(2) = 'WIFI_SUBNET_DEFAULT';
     aNames(3) = 'WIFI_GATEWAY_DEFAULT';
     aValues = NET.createArray('System.Double', numFrames);
-    [ljmError, aValues(1)] = LabJack.LJM.IPToNumber("192.168.1.207", 0);
-    [ljmError, aValues(2)] = LabJack.LJM.IPToNumber("255.255.255.0", 0);
-    [ljmError, aValues(3)] = LabJack.LJM.IPToNumber("192.168.1.1", 0);
+    [ljmError, aValues(1)] = LabJack.LJM.IPToNumber('192.168.1.207', 0);
+    aValues(1) = typecast(int32(aValues(1)), 'uint32');
+    [ljmError, aValues(2)] = LabJack.LJM.IPToNumber('255.255.255.0', 0);
+    aValues(2) = typecast(int32(aValues(2)), 'uint32');
+    [ljmError, aValues(3)] = LabJack.LJM.IPToNumber('192.168.1.1', 0);
+    aValues(3) = typecast(int32(aValues(1)), 'uint32');
     LabJack.LJM.eWriteNames(handle, numFrames, aNames, aValues, 0);
     
     disp('Set WiFi configuration:')
     str = '';
-    %Needs testing
     for i=1:numFrames,
-        [ljmError, str] = LabJack.LJM.NumberToIP(uint32(double(aValues(i))), str); %may not need to convert to double first
-        disp(['    ' char(aNames(i)) " : " num2str(aValues(i)) " - " + str])
+        [ljmError, str] = LabJack.LJM.NumberToIP(typecast(uint32(aValues(i)), 'int32'), str);
+        disp(['    ' char(aNames(i)) ' : ' num2str(aValues(i)) ' - ' char(str)])
     end
     
     %Setup and call eWriteString to configure the default WiFi SSID.
     name = 'WIFI_SSID_DEFAULT';
     str = 'LJOpen';
-    [ljmError, str] = LabJack.LJM.eWriteNameString(handle, name, str);
-    disp(['    ' name ' : ' str])
+    LabJack.LJM.eWriteNameString(handle, name, str);
+    disp(['    ' name ' : ' char(str)])
 
     %Setup and call eWriteString to configure the default WiFi password.
     name = 'WIFI_PASSWORD_DEFAULT';
     str = 'none';
-    [ljmError, str] = LabJack.LJM.eWriteNameString(handle, name, str);
-    disp(['    ' name ' : ' str])
+    LabJack.LJM.eWriteNameString(handle, name, str);
+    disp(['    ' name ' : ' char(str)])
 
     %Setup and call eWriteName to apply the new WiFi configuration
-    name = "WIFI_APPLY_SETTINGS";
+    name = 'WIFI_APPLY_SETTINGS';
     value = 1; %1 = apply
-    [ljmError, str] = LabJack.LJM.eWriteName(handle, name, value);
-    disp(['    ' name ' : ' value])
+    LabJack.LJM.eWriteName(handle, name, value);
+    disp(['    ' name ' : ' num2str(value)])
 catch e
     showErrorMessage(e)
 end

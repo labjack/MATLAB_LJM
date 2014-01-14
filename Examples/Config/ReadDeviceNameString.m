@@ -25,7 +25,7 @@ try
     str = '';
     [ljmError, str] = LabJack.LJM.eReadNameString(handle, 'DEVICE_NAME_DEFAULT', str);
 
-    disp(['  Device name default : ' str])
+    disp(['  Device name default : ' char(str)])
 catch e
     showErrorMessage(e)
 end

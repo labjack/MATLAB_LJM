@@ -38,13 +38,12 @@ try
     
     disp('Wifi configuration:')
     str = '';
-    %Needs testing
     for i=1:numFrames,
-        if ~isempty(strFind(char(aNames(i)), 'WIFI_STATUS')) or ~isempty(strFind(char(aNames(i)), 'WIFI_DHCP_ENABLE')) %may not need char
+        if ~isempty(strfind(char(aNames(i)), 'WIFI_STATUS')) || ~isempty(strfind(char(aNames(i)), 'WIFI_DHCP_ENABLE'))
             disp(['    ' char(aNames(i)) ' : ' num2str(aValues(i))])
         else
-            [ljmError, str] = LabJack.LJM.NumberToIP(uint32(double(aValues(i))), str); %may not need to convert to double first
-            disp(['    ' char(aNames(i)) " : " num2str(aValues(i)) " - " + str])
+            [ljmError, str] = LabJack.LJM.NumberToIP(typecast(uint32(aValues(i)), 'int32'), str);
+            disp(['    ' char(aNames(i)) ' : ' num2str(aValues(i)) ' - ' char(str)])
         end
     end
     
@@ -53,7 +52,7 @@ try
     str = '';
     [ljmError, str] = LabJack.LJM.eReadNameString(handle, name, str);
     
-    disp(['    ' name ' : ' str])
+    disp(['    ' name ' : ' char(str)])
 catch e
     showErrorMessage(e)
 end

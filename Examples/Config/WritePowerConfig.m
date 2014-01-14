@@ -37,7 +37,7 @@ try
 
     disp('Set configuration settings:');
     for i=1:numFrames,
-        disp([char(aNames(i)) ' : ' num2str(aValues(i))])
+        disp(['  ' char(aNames(i)) ' : ' num2str(aValues(i))])
     end
 catch e
     showErrorMessage(e)

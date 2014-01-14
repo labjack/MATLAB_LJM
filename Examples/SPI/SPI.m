@@ -108,7 +108,7 @@ try
     
     disp('SPI Configuration:')
     for i=1:numFrames,
-        disp(['  ' aNames(i) ' = ' aValues(i)]);
+        disp(['  ' char(aNames(i)) ' = ' num2str(aValues(i))]);
     end
     
     
@@ -120,33 +120,33 @@ try
     %Setup write bytes
     dataWrite = NET.createArray('System.Double', numBytes);
     for i=1:numBytes,
-        dataWrite[i] = randi(255); %1 to 255
+        dataWrite(i) = randi(255); %1 to 255
     end
     aNames = NET.createArray('System.String', 1);
     aWrites = NET.createArray('System.Int32', 1);
     aNumValues = NET.createArray('System.Int32', 1);
     
     %Write the bytes
-    aNames(0) = 'SPI_DATA_WRITE';
-    aWrites(0) = LJM_CONSTANTS.WRITE;
-    aNumValues(0) = numBytes;
+    aNames(1) = 'SPI_DATA_WRITE';
+    aWrites(1) = LJM_CONSTANTS.WRITE;
+    aNumValues(1) = numBytes;
     LabJack.LJM.eNames(handle, 1, aNames, aWrites, aNumValues, dataWrite, 0);
     
     %Display the bytes written
     disp('dataWrite: ')
-    disp(dataWrite)
+    disp(double(dataWrite))
     
     
     %Read the bytes
     dataRead = NET.createArray('System.Double', numBytes);
-    aNames(0) = 'SPI_DATA_READ';
-    aWrites(0) = LJM_CONSTANTS.READ;
-    aNumValues(0) = numBytes;
+    aNames(1) = 'SPI_DATA_READ';
+    aWrites(1) = LJM_CONSTANTS.READ;
+    aNumValues(1) = numBytes;
     LabJack.LJM.eNames(handle, 1, aNames, aWrites, aNumValues, dataRead, 0);
     
     %Display the bytes read
     disp('dataRead: ')
-    disp(dataRead);
+    disp(double(dataRead));
 catch e
     showErrorMessage(e)
 end

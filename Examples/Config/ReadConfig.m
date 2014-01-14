@@ -39,7 +39,7 @@ try
 
     disp('Configuration settings:')
     for i=1:numFrames,
-        disp([char(aNames(i)) ', value: ' num2str(aValues(i))])
+        disp([' ' char(aNames(i)) ', value: ' num2str(aValues(i))])
     end
 catch e
     showErrorMessage(e)

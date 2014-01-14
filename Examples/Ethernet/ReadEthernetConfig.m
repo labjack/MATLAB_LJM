@@ -38,11 +38,10 @@ try
     
     disp('Ethernet configuration:')
     str = '';
-    %Needs testing
     for i=1:numFrames,
-        if isempty(strFind(char(aNames(i)), 'ETHERNET_DHCP_ENABLE')) %may not need char
-            [ljmError, str] = LabJack.LJM.NumberToIP(uint32(double(aValues(i))), str); %may not need to convert to double first
-            disp(['    ' char(aNames(i)) " : " num2str(aValues(i)) " - " + str])
+        if isempty(strfind(char(aNames(i)), 'ETHERNET_DHCP_ENABLE'))            
+            [ljmError, str] = LabJack.LJM.NumberToIP(typecast(uint32(aValues(i)), 'int32'), str);
+            disp(['    ' char(aNames(i)) ' : ' num2str(aValues(i)) ' - ' char(str)])
         else
             disp(['    ' char(aNames(i)) ' : ' num2str(aValues(i))])
         end

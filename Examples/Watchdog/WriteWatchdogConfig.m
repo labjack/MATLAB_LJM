@@ -42,15 +42,14 @@ try
     aNames(15) = 'WATCHDOG_DAC1_DEFAULT';
     aNames(16) = 'WATCHDOG_ENABLE_DEFAULT';
     aValues = NET.createArray('System.Double', numFrames);
-    aValues(0) = 0; %Set WATCHDOG_ENABLE_DEFAULT to 0 before configuring.
-    aValues(1) = 0;
-    aValues(2) = 20; %Set WATCHDOG_TIMEOUT_S_DEFAULT to 20 seconds.
-    aValues(3) = 0;
+    aValues(1) = 0; %Set WATCHDOG_ENABLE_DEFAULT to 0 before configuring.
+    aValues(2) = 0;
+    aValues(3) = 20; %Set WATCHDOG_TIMEOUT_S_DEFAULT to 20 seconds.
     aValues(4) = 0;
     aValues(5) = 0;
     aValues(6) = 0;
     aValues(7) = 1; %Set WATCHDOG_RESET_ENABLE_DEFAULT to 1 to enable.
-    aValues(8) = 0;
+    aValues(8) = 0; 
     aValues(9) = 0;
     aValues(10) = 0;
     aValues(11) = 0;
@@ -59,7 +58,7 @@ try
     aValues(14) = 0;
     aValues(15) = 0;
     aValues(16) = 0; %Set WATCHDOG_ENABLE_DEFAULT to 1 afterwards to enable.
-    LabJack.LJM.eReadNames(handle, numFrames, aNames, aValues, 0);
+    LabJack.LJM.eWriteNames(handle, numFrames, aNames, aValues, 0);
 
     disp('Set Watchdog configuration:')
     for i=1:numFrames,

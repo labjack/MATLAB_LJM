@@ -25,7 +25,7 @@ try
     str = 'LJTest';
     LabJack.LJM.eWriteNameString(handle, 'DEVICE_NAME_DEFAULT', str);
 
-    disp(['  Set device name default : ' str])
+    disp(['  Set device name default : ' char(str)])
 catch e
     showErrorMessage(e)
 end

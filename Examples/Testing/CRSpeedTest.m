@@ -31,18 +31,14 @@ try
     resolutionAIN = 1.0;
     
     %Digital settings
-    readDigital = FALSE;
-    writeDigital = FALSE;
+    readDigital = false;
+    writeDigital = false;
     
     %Analog output settings
-    writeDACs = FALSE;
+    writeDACs = false;
     
     %Variables for LJM library calls
     numFrames = 0;
-    %aNames = NET.createArray('System.String', numFrames);
-    %aWrites = NET.createArray('System.Int32', numFrames);
-    %aNumValues = NET.createArray('System.Int32', numFrames);
-    %aValues = NET.createArray('System.Double', numFrames);
     
     if numAIN > 0
         %Configure analog input settings
@@ -50,10 +46,11 @@ try
         aNames = NET.createArray('System.String', numFrames);
         aValues = NET.createArray('System.Double', numFrames);
         for i=1:numAIN,
-            aNames(i*2) = ['AIN' num2str(i) '_RANGE'];
-            aValues(i*2) = rangeAIN;
-            aNames(i*2+1) = ['AIN' num2Str(i) '_RESOLUTION_INDEX'];
-            aValues(i*2+1) = resolutionAIN;
+            j = i - 1;
+            aNames(1 + j*2) = ['AIN' num2str(j) '_RANGE'];
+            aValues(1 + j*2) = rangeAIN;
+            aNames(2 + j*2) = ['AIN' num2str(j) '_RESOLUTION_INDEX'];
+            aValues(2 + j*2) = resolutionAIN;
         end
         LabJack.LJM.eWriteNames(handle, numFrames, aNames, aValues, 0);
     else
@@ -63,25 +60,28 @@ try
     %Initialize and configure eNames parameters for loop's eNames call
     numFrames = numAIN + readDigital + writeDigital + writeDACs*2;
     aNames = NET.createArray('System.String', numFrames);
-    aWrites = NET.createArray('System.String', numFrames);
-    aNumValues = NET.createArray('System.String', numFrames);
-    aValues = NET.createArray('System.String', numFrames); %In this case numFrames is the size of aValue
+    aWrites = NET.createArray('System.Int32', numFrames);
+    aNumValues = NET.createArray('System.Int32', numFrames);
+    aValues = NET.createArray('System.Double', numFrames); %In this case numFrames is the size of aValue
     
+    i = 1;
+
     %Add analog input reads (AIN 0 to numAIN-1)
-    for i=1:numAIN,
+    while i <= numAIN
         aNames(i) = ['AIN' num2str(i-1)];
-        aWrites(i) = LJM.CONSTANTS.READ;
+        aWrites(i) = LJM_CONSTANTS.READ;
         aNumValues(i) = 1;
         aValues(i) = 0;
+        i = i + 1;
     end
-
+    
     if readDigital
         %Add digital read
         aNames(i) = 'DIO_STATE';
         aWrites(i) = LJM_CONSTANTS.READ;
         aNumValues(i) = 1;
         aValues(i) = 0;
-        i++;
+        i = i + 1;
     end
     
     if writeDigital
@@ -90,29 +90,30 @@ try
         aWrites(i) = LJM_CONSTANTS.WRITE;
         aNumValues(i) = 1;
         aValues(i) = 0; %output-low
-        i++;
+        i = i + 1;
+    end
     
     if writeDACs
         %Add analog output writes (DAC0-1)
         for j=0:1,
-            aNames(i) = ['DAC' num2Str(j)];
+            aNames(i) = ['DAC' num2str(j)];
             aWrites(i) = LJM_CONSTANTS.WRITE;
             aNumValues(i) = 1;
             aValues(i) = 0.0; %0.0 V
-            i++;
+            i = i + 1;
         end
     end
     
     disp('Test frames:')
     
-    wrStr = "";
+    wrStr = '';
     for i=1:numFrames,
         if aWrites(i) == LJM_CONSTANTS.READ
             wrStr = 'READ';
         else
             wrStr = 'WRITE';
         end
-        disp(['    ' wrStr ' ' aNames(i)])
+        disp(['    ' wrStr ' ' char(aNames(i))])
     end
     disp(['Beginning ' num2str(numIterations) ' iterations...']);
     
@@ -130,30 +131,29 @@ try
         st2 = tic;
         LabJack.LJM.eNames(handle, numFrames, aNames, aWrites, aNumValues, aValues, 0);
         
-        curMS = toc*1000(st2)
+        curMS = toc(st2)*1000;
         if minMS == 0
             minMS = curMS;
         end
         minMS = min(curMS, minMS);
         maxMS = max(curMS, maxMS);
-        %totalMS += curMS;
     end
     
     totalMS = toc*1000;
     
     disp(['    ' num2str(numIterations) ' iterations performed:'])
-    disp(['    Time taken: " num2str(totalMS) ' ms']);
+    disp(['    Time taken: ' num2str(totalMS) ' ms']);
     disp(['    Average time per iteration: ' num2str(totalMS/numIterations) ' ms'])
     disp(['    Min / Max time for one iteration: ' num2str(minMS) ' ms / ' num2str(maxMS) ' ms'])
     
     disp('Last eNames results:')
     for i=1:numFrames,
-        if aWrites(i) == LJM_CONSTANTS.READ)
+        if aWrites(i) == LJM_CONSTANTS.READ
             wrStr = 'READ';
         else
             wrStr = 'WRITE';
         end
-        disp(['    ' aNames(i) ' ' wrStr ' value : ' + aValues(i)]);
+        disp(['    ' char(aNames(i)) ' ' wrStr ' value : ' num2str(aValues(i))])
     end
 catch e
     showErrorMessage(e)

@@ -53,24 +53,27 @@ try
     aValues = NET.createArray('System.Double', 5); %TX/RX bytes will go here
     
     %Set the TX bytes. We are sending 1 byte for the address.
-    aNames(0) = 'I2C_WRITE_DATA';
-    aWrites(0) = LJM_CONSTANTS.WRITE; %Indicates we are writing the values.
-    aNumValues(0) = 1; %The number of bytes
-    aValues(0) = 0; %Byte 0: Memory pointer = 0
+    aNames(1) = 'I2C_WRITE_DATA';
+    aWrites(1) = LJM_CONSTANTS.WRITE; %Indicates we are writing the values.
+    aNumValues(1) = 1; %The number of bytes
+    aValues(1) = 0; %Byte 0: Memory pointer = 0
     LabJack.LJM.eNames(handle, 1, aNames, aWrites, aNumValues, aValues, 0);
     
     LabJack.LJM.eWriteName(handle, 'I2C_GO', 1); %Do the I2C communications.
     
     %Read the RX bytes.
-    aNames(0) = 'I2C_READ_DATA';
-    aWrites(0) = LJM_CONSTANTS.READ; %Indicates we are reading the values.
-    aNumValues(0) = 4; %The number of bytes
+    aNames(1) = 'I2C_READ_DATA';
+    aWrites(1) = LJM_CONSTANTS.READ; %Indicates we are reading the values.
+    aNumValues(1) = 4; %The number of bytes
     %aValues(1) to aValues(4) will contain the data
-    aValues(:) = 0
+    for i=1:4,
+        aValues(i) = 0;
+    end
     LabJack.LJM.eNames(handle, 1, aNames, aWrites, aNumValues, aValues, 0);
     
     disp('Read User Memory = ')
-    disp(aValues(1:4))
+    aVals = double(aValues);
+    disp(aVals(1:4))
     
     
     %Write EEPROM bytes 0-3 in the user memory area, using the page write
@@ -82,12 +85,11 @@ try
     LabJack.LJM.eWriteName(handle, 'I2C_NUM_BYTES_RX', 0); %Set the number of bytes to receive
     
     %Set the TX bytes.
-    aNames(0) = 'I2C_WRITE_DATA';
-    aWrites(0) = LJM_CONSTANTS.WRITE; %Indicates we are writing the values.
-    aNumValues(0) = 5; %The number of bytes
-    aValues(0) = 0; %Byte 0: Memory pointer = 0
+    aNames(1) = 'I2C_WRITE_DATA';
+    aWrites(1) = LJM_CONSTANTS.WRITE; %Indicates we are writing the values.
+    aNumValues(1) = 5; %The number of bytes
+    aValues(1) = 0; %Byte 0: Memory pointer = 0
     %Create 4 new random numbers to write (aValues(2:5)).
-    Random rand = new Random();
     for i=2:5,
         aValues(i) = randi(255); %1 to 255
     end
@@ -96,7 +98,8 @@ try
     LabJack.LJM.eWriteName(handle, 'I2C_GO', 1); %Do the I2C communications.
     
     disp('Write User Memory = ');
-    disp(aValues(2:5))
+    aVals = double(aValues);
+    disp(aVals(2:5))
     
     
     %Final read of EEPROM bytes 0-3 in the user memory area. We need a single
@@ -105,24 +108,27 @@ try
     LabJack.LJM.eWriteName(handle, 'I2C_NUM_BYTES_RX', 4); %Set the number of bytes to receive
 
     %Set the TX bytes. We are sending 1 byte for the address.
-    aNames(0) = 'I2C_WRITE_DATA';
-    aWrites(0) = LJM_CONSTANTS.WRITE; %Indicates we are writing the values.
-    aNumValues(0) = 1; %The number of bytes
-    aValues(0) = 0; %Byte 0: Memory pointer = 0
+    aNames(1) = 'I2C_WRITE_DATA';
+    aWrites(1) = LJM_CONSTANTS.WRITE; %Indicates we are writing the values.
+    aNumValues(1) = 1; %The number of bytes
+    aValues(1) = 0; %Byte 0: Memory pointer = 0
     LabJack.LJM.eNames(handle, 1, aNames, aWrites, aNumValues, aValues, 0);
 
     LabJack.LJM.eWriteName(handle, 'I2C_GO', 1); %Do the I2C communications.
 
     %Read the RX bytes.
-    aNames(0) = 'I2C_READ_DATA';
-    aWrites(0) = LJM_CONSTANTS.READ; %Indicates we are reading the values.
-    aNumValues(0) = 4; %The number of bytes
+    aNames(1) = 'I2C_READ_DATA';
+    aWrites(1) = LJM_CONSTANTS.READ; %Indicates we are reading the values.
+    aNumValues(1) = 4; %The number of bytes
     %aValues(1) to aValues(4) will contain the data
-    aValues(:) = 0;
+    for i=1:4,
+        aValues(i) = 0;
+    end
     LabJack.LJM.eNames(handle, 1, aNames, aWrites, aNumValues, aValues, 0);
 
     disp('Read User Memory = ');
-    disp(aValues(1:4))
+    aVals = double(aValues);
+    disp(aVals(1:4))
 catch e
     showErrorMessage(e)
 end

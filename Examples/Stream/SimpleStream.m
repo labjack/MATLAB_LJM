@@ -53,12 +53,6 @@ try
         disp(['Stream started with a scan rate of ' num2str(scanRate) ' Hz.'])
     catch e
         showErrorMessage(e)
-        dispErr = false;
-        %try
-        %    LabJack.LJM.eStreamStop(handle); %In case a previous stream was started
-        %catch
-        %end
-        %throw()
     end
     
     tic
@@ -76,27 +70,23 @@ try
             totalScans = totalScans + scansPerRead;
 
             %Count the skipped samples which are indicated by -9999 values.
-            %Missed samples occur after a device's stream buffer overflows and
-            %are reported after auto-recover mode ends.
-            
-            %Todo: Count the -9999.0 (below is test code for this)
-            aData(1) = -9999.00;
-            aData(2) = aData(1);
-            aData(3) = aData(1);
-            aData(4) = aData(1);
-            tic
-            curSkippedSamples = sum(aData == -9999.0)
-            toc
+            %Skipped samples occur after a device's stream buffer overflows
+            %and are reported after auto-recover mode ends.
+            %When streaming at faster scan rates in MATLAB, try counting
+            %the skipped packets outside your eStreamRead loop if you are
+            %getting skipped samples/scan.
+            curSkippedSamples = sum(double(aData) == -9999.0);
             totalSkippedSamples = totalSkippedSamples + curSkippedSamples;
-
+            
             disp(['  eStreamRead ' num2str(i)])
             ainStr = '';
             for j=1:numAddresses,
                 ainStr = [ainStr char(aScanListNames(j)) ' = ' num2str(aData(j)) '  '];
             end
             disp(['  1st scan out of ' num2str(scansPerRead) ': ' ainStr])
-            disp(['  Scans Skipped = ' num2str(curSkippedSamples/numAddresses) ', Scan Backlogs: Device = ' ...
-                num2str(deviceScanBacklog) ', LJM = ' num2str(ljmScanBacklog)])
+            disp(['  Scans Skipped = ' num2str(curSkippedSamples/numAddresses) ...
+                ', Scan Backlogs: Device = ' num2str(deviceScanBacklog) ...
+                ', LJM = ' num2str(ljmScanBacklog)])
         end
        
     catch e

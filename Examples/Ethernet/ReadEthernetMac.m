@@ -21,8 +21,9 @@ try
     
     showDeviceInfo(handle);
     
-    %Call eAddresses to read the ethernet MAC. Note that we are reading a byte
-    %array which is the big endian binary representation of the 64-bit MAC.
+    %Call eAddresses to read the ethernet MAC. Note that we are reading a
+    %byte array which is the big endian binary representation of the 64-bit
+    %MAC.
     numFrames = 1;
     aAddresses = NET.createArray('System.Int32', numFrames);
     aAddresses(1) = 60020;
@@ -33,12 +34,10 @@ try
     aNumValues = NET.createArray('System.Int32', numFrames);
     aNumValues(1) = 8;
     aValues = NET.createArray('System.Double', aNumValues(1));
-    LabJack.LJM.eAddresses(handle, numFrames, aAddresses, aTypes, aValues, 0);
-    
-    %Needs testing
-    
+    LabJack.LJM.eAddresses(handle, numFrames, aAddresses, aTypes, aWrites, aNumValues, aValues, 0);
+
     %Convert returned values to bytes 
-    macBytes = uint8(double(aValues)); %may not ned double
+    macBytes = uint8(aValues);
     
     %Convert big endian byte array to a 64-bit signed integer value
     [computerType, maxSize, endian] = computer;
@@ -51,7 +50,7 @@ try
     macString = '';
     [ljmError, macString] = LabJack.LJM.NumberToMAC(macNumber, macString);
     
-    disp(['Ethernet MAC : ' macNumber ' - ' macString])
+    disp(['Ethernet MAC : ' num2str(macNumber) ' - ' char(macString)])
 catch e
     showErrorMessage(e)
 end

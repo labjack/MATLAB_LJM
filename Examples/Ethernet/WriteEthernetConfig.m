@@ -30,19 +30,21 @@ try
     aNames(3) = 'ETHERNET_GATEWAY_DEFAULT';
     aNames(4) = 'ETHERNET_DHCP_ENABLE_DEFAULT';
     aValues = NET.createArray('System.Double', numFrames);
-    [ljmError, aValues(1)] = LabJack.LJM.IPToNumber("192.168.1.207", 0);
-    [ljmError, aValues(2)] = LabJack.LJM.IPToNumber("255.255.255.0", 0);
-    [ljmError, aValues(3)] = LabJack.LJM.IPToNumber("192.168.1.1", 0);
+    [ljmError, aValues(1)] = LabJack.LJM.IPToNumber('192.168.1.207', 0);
+    aValues(1) = typecast(int32(aValues(1)), 'uint32');
+    [ljmError, aValues(2)] = LabJack.LJM.IPToNumber('255.255.255.0', 0);
+    aValues(2) = typecast(int32(aValues(2)), 'uint32');
+    [ljmError, aValues(3)] = LabJack.LJM.IPToNumber('192.168.1.1', 0);
+    aValues(3) = typecast(int32(aValues(3)), 'uint32');
     aValues(4) = 1;
     LabJack.LJM.eWriteNames(handle, numFrames, aNames, aValues, 0);
     
     disp('Set ethernet configuration:')
     str = '';
-    %Needs testing
     for i=1:numFrames,
-        if isempty(strFind(char(aNames(i)), 'ETHERNET_DHCP_ENABLE_DEFAULT')) %may not need char
-            [ljmError, str] = LabJack.LJM.NumberToIP(uint32(double(aValues(i))), str); %may not need to convert to double first
-            disp(['    ' char(aNames(i)) " : " num2str(aValues(i)) " - " + str])
+        if isempty(strfind(char(aNames(i)), 'ETHERNET_DHCP_ENABLE_DEFAULT'))
+            [ljmError, str] = LabJack.LJM.NumberToIP(typecast(uint32(aValues(i)), 'int32'), str);
+            disp(['    ' char(aNames(i)) ' : ' num2str(aValues(i)) ' - ' char(str)])
         else
             disp(['    ' char(aNames(i)) ' : ' num2str(aValues(i))])
         end

@@ -33,17 +33,15 @@ try
     aNumValues = NET.createArray('System.Int32', numFrames);
     aNumValues(1) = 8;
     aValues = NET.createArray('System.Double', aNumValues(1));
-    LabJack.LJM.eAddresses(handle, numFrames, aAddresses, aTypes, aValues, 0);
-    
-    %Needs testing
+    LabJack.LJM.eAddresses(handle, numFrames, aAddresses, aTypes, aWrites, aNumValues, aValues, 0);
     
     %Convert returned values to bytes 
-    macBytes = uint8(double(aValues)); %may not ned double
+    macBytes = uint8(aValues);
     
     %Convert big endian byte array to a 64-bit signed integer value
     [computerType, maxSize, endian] = computer;
     if endian == 'L'
-        macBytes = macBytes(end:-1:1)
+        macBytes = macBytes(end:-1:1);
     end
     macNumber = typecast(macBytes, 'int64');
     
@@ -51,7 +49,7 @@ try
     macString = '';
     [ljmError, macString] = LabJack.LJM.NumberToMAC(macNumber, macString);
     
-    disp(['WiFi MAC : ' macNumber ' - ' macString])
+    disp(['WiFi MAC : ' num2str(macNumber) ' - ' char(macString)])
 catch e
     showErrorMessage(e)
 end
