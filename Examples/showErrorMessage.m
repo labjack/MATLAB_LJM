@@ -10,5 +10,4 @@ if(isa(e, 'NET.NetException'))
     end
 end
 disp(getReport(e))
-
-end
+end  % showErrorMessage end

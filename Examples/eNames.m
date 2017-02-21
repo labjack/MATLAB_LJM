@@ -4,24 +4,37 @@
 % support@labjack.com
 %
 
-clc %Clear the MATLAB command window
-clear %Clear the MATLAB variables
+clc  % Clear the MATLAB command window
+clear  % Clear the MATLAB variables
 
-ljmAsm = NET.addAssembly('LabJack.LJM'); %Make the LJM .NET assembly visible in MATLAB
+% Make the LJM .NET assembly visible in MATLAB
+ljmAsm = NET.addAssembly('LabJack.LJM');
 
+% Creating an object to nested class LabJack.LJM.CONSTANTS
 t = ljmAsm.AssemblyHandle.GetType('LabJack.LJM+CONSTANTS');
-LJM_CONSTANTS = System.Activator.CreateInstance(t); %creating an object to nested class LabJack.LJM.CONSTANTS
+LJM_CONSTANTS = System.Activator.CreateInstance(t);
 
 handle = 0;
 
 try
-    %Open first found LabJack
+    % Open first found LabJack
+
+    % Any device, Any connection, Any identifier
     [ljmError, handle] = LabJack.LJM.OpenS('ANY', 'ANY', 'ANY', handle);
-    %[ljmError, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctANY, 'ANY', handle);
-    
+
+    % T7 device, Any connection, Any identifier
+    % [ljmError, handle] = LabJack.LJM.OpenS('T7', 'ANY', 'ANY', handle);
+
+    % T4 device, Any connection, Any identifier
+    % [ljmError, handle] = LabJack.LJM.OpenS('T4', 'ANY', 'ANY', handle);
+
+    % Any device, Any connection, Any identifier
+    % [ljmError, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, ...
+    %     LJM_CONSTANTS.ctANY, 'ANY', handle);
+
     showDeviceInfo(handle);
-    
-    %Setup and call eNames to write/read values.
+
+    % Setup and call eNames to write/read values.
     numFrames = 3;
     aNames = NET.createArray('System.String', numFrames);
     aNames(1) = 'DAC0';
@@ -36,17 +49,21 @@ try
     aNumValues(2) = 1;
     aNumValues(3) = 1;
     aValues = NET.createArray('System.Double', numFrames);
-    aValues(1) = 2.5; %write 2.5 V
-    aValues(2) = 12345; %write 12345
-    aValues(3) = 0; %read
-    LabJack.LJM.eNames(handle, numFrames, aNames, aWrites, aNumValues, aValues, 0);
-    
+    aValues(1) = 2.5;  % Write 2.5 V
+    aValues(2) = 12345;  % Write 12345
+    aValues(3) = 0;  % Read
+    LabJack.LJM.eNames(handle, numFrames, aNames, aWrites, aNumValues, ...
+        aValues, 0);
+
     disp('eNames results:')
-    for i=1:numFrames,
-        disp(['  Name: ' char(aNames(i)) ', write: ' num2str(aWrites(i)) ', value: ' num2str(aValues(i))])
+    for i = 1:numFrames
+        disp(['  Name: ' char(aNames(i)) ', Write: ' ...
+            num2str(aWrites(i)) ', Value: ' num2str(aValues(i))])
     end
 catch e
     showErrorMessage(e)
+    LabJack.LJM.CloseAll();
+    return
 end
 
 try
