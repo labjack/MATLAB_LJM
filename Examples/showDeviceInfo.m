@@ -1,6 +1,6 @@
 function showDeviceInfo(handle)
-% showDeviceInfo Displays the device's information based on the passed
-% device handle.
+% SHOWDEVICEINFO  Displays the device's information based on the passed
+%   device handle.
 
 [~, devType, connType, serNum, ipAddr, port, maxBytesMB] = ...
     LabJack.LJM.GetHandleInfo(handle, 0, 0, 0, 0, 0, 0);

@@ -1,5 +1,5 @@
 function showErrorMessage(e)
-% showErrorMessage Displays the LJM or .NET error from a MATLAB exception.
+% SHOWERRORMESSAGE  Displays the LJM or .NET error from a MATLAB exception.
 
 if(isa(e, 'NET.NetException'))
     eNet = e.ExceptionObject;
