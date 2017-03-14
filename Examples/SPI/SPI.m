@@ -3,97 +3,104 @@
 %
 % You can short MOSI to MISO for testing.
 %
-% MOSI    FIO2
-% MISO    FIO3
-% CLK     FIO0
-% CS      FIO1
+% T7:
+%     MOSI    FIO2
+%     MISO    FIO3
+%     CLK     FIO0
+%     CS      FIO1
 %
-% If you short MISO to MOSI, then you will read back the same bytes that you
-% write. If you short MISO to GND, then you will read back zeros. If you short
-% MISO to VS or leave it unconnected, you will read back 255s.
+% T4:
+%     MOSI    FIO6
+%     MISO    FIO7
+%     CLK     FIO4
+%     CS      FIO5
+%
+% If you short MISO to MOSI, then you will read back the same bytes that
+% you write. If you short MISO to GND, then you will read back zeros. If
+% you short MISO to VS or leave it unconnected, you will read back 255s.
 %
 % support@labjack.com
 %
 
-clc %Clear the MATLAB command window
-clear %Clear the MATLAB variables
+clc  % Clear the MATLAB command window
+clear  % Clear the MATLAB variables
 
-ljmAsm = NET.addAssembly('LabJack.LJM'); %Make the LJM .NET assembly visible in MATLAB
+% Make the LJM .NET assembly visible in MATLAB
+ljmAsm = NET.addAssembly('LabJack.LJM');
 
+% Creating an object to nested class LabJack.LJM.CONSTANTS
 t = ljmAsm.AssemblyHandle.GetType('LabJack.LJM+CONSTANTS');
-LJM_CONSTANTS = System.Activator.CreateInstance(t); %creating an object to nested class LabJack.LJM.CONSTANTS
+LJM_CONSTANTS = System.Activator.CreateInstance(t);
 
 handle = 0;
 
 try
-    %Open first found LabJack
+    % Open first found LabJack
+
+    % Any device, Any connection, Any identifier
     [ljmError, handle] = LabJack.LJM.OpenS('ANY', 'ANY', 'ANY', handle);
-    %[ljmError, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, LJM_CONSTANTS.ctANY, 'ANY', handle);
-    
+
+    % T7 device, Any connection, Any identifier
+    % [ljmError, handle] = LabJack.LJM.OpenS('T7', 'ANY', 'ANY', handle);
+
+    % T4 device, Any connection, Any identifier
+    % [ljmError, handle] = LabJack.LJM.OpenS('T4', 'ANY', 'ANY', handle);
+
+    % Any device, Any connection, Any identifier
+    % [ljmError, handle] = LabJack.LJM.Open(LJM_CONSTANTS.dtANY, ...
+    %     LJM_CONSTANTS.ctANY, 'ANY', handle);
+
     showDeviceInfo(handle);
-    
-    
-    %CS is FIO1
-    LabJack.LJM.eWriteName(handle, 'SPI_CS_DIONUM', 1);
-    
-    %CLK is FIO0
-    LabJack.LJM.eWriteName(handle, 'SPI_CLK_DIONUM', 0);
-    
-    %MISO is FIO3
-    LabJack.LJM.eWriteName(handle, 'SPI_MISO_DIONUM', 3);
-    
-    %MOSI is FIO2
-    LabJack.LJM.eWriteName(handle, 'SPI_MOSI_DIONUM', 2);
-    
-    %Modes:
-    %0 = A: CPHA=0, CPOL=0 
-    %    Data clocked on the rising edge
-    %    Data changed on the falling edge
-    %    Final clock state low
-    %    Initial clock state low
-    %1 = B: CPHA=0, CPOL=1
-    %    Data clocked on the falling edge
-    %    Data changed on the rising edge
-    %    Final clock state low
-    %    Initial clock state low
-    %2 = C: CPHA=1, CPOL=0 
-    %    Data clocked on the falling edge
-    %    Data changed on the rising edge
-    %    Final clock state high
-    %    Initial clock state high
-    %3 = D: CPHA=1, CPOL=1 
-    %    Data clocked on the rising edge
-    %    Data changed on the falling edge
-    %    Final clock state high
-    %    Initial clock state high
-    
-    %Selecting Mode: A - CPHA=1, CPOL=1.
-    LabJack.LJM.eWriteName(handle, 'SPI_MODE', 0);
-    
-    %Speed Throttle:
-    %Frequency = 1000000000 / (175*(65536-SpeedThrottle) + 1020)
-    %Valid speed throttle values are 1 to 65536 where 0 = 65536.
-    %Note: The above equation and its frequency range were tested for
-    %firmware 1.0009 and may change in the future.
-    
-    %Configuring Max. Speed (~ 1 MHz)
+
+    if getDeviceType(handle) == LJM_CONSTANTS.dtT4
+        % Setting CS, CLK, MISO, and MOSI lines for the T4. FIO0 to FIO3
+        % are reserved for analog inputs, and SPI requires digital lines.
+
+        % CS is FIO5
+        LabJack.LJM.eWriteName(handle, 'SPI_CS_DIONUM', 5);
+        % CLK is FIO4
+        LabJack.LJM.eWriteName(handle, 'SPI_CLK_DIONUM', 4);
+        % MISO is FIO7
+        LabJack.LJM.eWriteName(handle, 'SPI_MISO_DIONUM', 7);
+        % MOSI is FIO6
+        LabJack.LJM.eWriteName(handle, 'SPI_MOSI_DIONUM', 6);
+    else
+        % Setting CS, CLK, MISO, and MOSI lines for the T7 and other
+        % devices.
+
+        % CS is FIO1
+        LabJack.LJM.eWriteName(handle, 'SPI_CS_DIONUM', 1);
+        % CLK is FIO0
+        LabJack.LJM.eWriteName(handle, 'SPI_CLK_DIONUM', 0);
+        % MISO is FIO3
+        LabJack.LJM.eWriteName(handle, 'SPI_MISO_DIONUM', 3);
+        % MOSI is FIO2
+        LabJack.LJM.eWriteName(handle, 'SPI_MOSI_DIONUM', 2);
+    end
+
+    % Selecting Mode CPHA=1 (bit 0), CPOL=1 (bit 1)
+    LabJack.LJM.eWriteName(handle, 'SPI_MODE', 3);
+
+    % Speed Throttle:
+    % Valid speed throttle values are 1 to 65536 where 0 = 65536.
+    % Configuring Max. Speed (~800 kHz) = 0
     LabJack.LJM.eWriteName(handle, 'SPI_SPEED_THROTTLE', 0);
-    
-    %Options
-    %bit 0:
-    %    0 = Active low clock select enabled
-    %    1 = Active low clock select disabled.
-    %bit 1:
-    %    0 = DIO directions are automatically changed
-    %    1 = DIO directions are not automatically changed.
-    %bits 2-3: Reserved
-    %bits 4-7: Number of bits in the last byte. 0 = 8.
-    %bits 8-15: Reserved
-    
-    %Enabling active low clock select pin
+
+    % Options
+    % bit 0:
+    %     0 = Active low clock select enabled
+    %     1 = Active low clock select disabled.
+    % bit 1:
+    %     0 = DIO directions are automatically changed
+    %     1 = DIO directions are not automatically changed.
+    % bits 2-3: Reserved
+    % bits 4-7: Number of bits in the last byte. 0 = 8.
+    % bits 8-15: Reserved
+
+    % Enabling active low clock select pin
     LabJack.LJM.eWriteName(handle, 'SPI_OPTIONS', 0);
-    
-    %Read back and display the SPI settings
+
+    % Read back and display the SPI settings
     numFrames = 7;
     aNames = NET.createArray('System.String', numFrames);
     aNames(1) = 'SPI_CS_DIONUM';
@@ -105,55 +112,48 @@ try
     aNames(7) = 'SPI_OPTIONS';
     aValues = NET.createArray('System.Double', numFrames);
     LabJack.LJM.eReadNames(handle, numFrames, aNames, aValues, 0);
-    
+
     disp('SPI Configuration:')
-    for i=1:numFrames,
+    for i = 1:numFrames
         disp(['  ' char(aNames(i)) ' = ' num2str(aValues(i))]);
     end
-    
-    
-    %Write/Read 4 bytes
+
+    % Write(TX)/Read(TX) 4 bytes
     numBytes = 4;
     LabJack.LJM.eWriteName(handle, 'SPI_NUM_BYTES', numBytes);
-    
-    
-    %Setup write bytes
-    dataWrite = NET.createArray('System.Double', numBytes);
-    for i=1:numBytes,
-        dataWrite(i) = randi(255); %1 to 255
-    end
-    aNames = NET.createArray('System.String', 1);
-    aWrites = NET.createArray('System.Int32', 1);
-    aNumValues = NET.createArray('System.Int32', 1);
-    
-    %Write the bytes
-    aNames(1) = 'SPI_DATA_WRITE';
-    aWrites(1) = LJM_CONSTANTS.WRITE;
-    aNumValues(1) = numBytes;
-    LabJack.LJM.eNames(handle, 1, aNames, aWrites, aNumValues, dataWrite, 0);
-    
-    %Display the bytes written
-    disp('dataWrite: ')
-    disp(double(dataWrite))
-    
-    
-    %Read the bytes
-    dataRead = NET.createArray('System.Double', numBytes);
-    aNames(1) = 'SPI_DATA_READ';
-    aWrites(1) = LJM_CONSTANTS.READ;
-    aNumValues(1) = numBytes;
-    LabJack.LJM.eNames(handle, 1, aNames, aWrites, aNumValues, dataRead, 0);
-    
-    %Display the bytes read
-    disp('dataRead: ')
-    disp(double(dataRead));
-catch e
-    showErrorMessage(e)
-end
+    aBytes = NET.createArray('System.Byte', numBytes);
 
-try
+    % Write the bytes
+    % Setting array to random values
+    for i = 1:numBytes
+        aBytes(i) = randi(255);  % 1 to 255
+    end
+    LabJack.LJM.eWriteNameByteArray(handle, 'SPI_DATA_TX', numBytes, ...
+        aBytes, -1);
+    % Do the SPI communications
+    LabJack.LJM.eWriteName(handle, 'SPI_GO', 1);
+
+    % Display the bytes written
+    disp('Write (TX): ')
+    disp(uint8(aBytes))
+
+    % Read the bytes
+    % Setting array to 0 values
+    for i = 1:numBytes
+        aBytes(i) = 0;
+    end
+    LabJack.LJM.eReadNameByteArray(handle, 'SPI_DATA_RX', numBytes, ...
+        aBytes, -1);
+    % Do the SPI communications
+    LabJack.LJM.eWriteName(handle, 'SPI_GO', 1);
+
+    % Display the bytes read
+    disp('Read (RX): ')
+    disp(uint8(aBytes));
+
     % Close handle
     LabJack.LJM.Close(handle);
 catch e
     showErrorMessage(e)
+    LabJack.LJM.CloseAll();
 end
