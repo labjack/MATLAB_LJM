@@ -1,11 +1,11 @@
 MATLAB - LJM .NET examples for Windows
-01/14/2014
+04/06/2017
 support@labjack.com
 
 
-This package contains MATLAB example scripts that demonstrate LabJack T7 usage
-using the MATLAB .NET interface and LJM .NET assembly. Examples were tested with
-MATLAB 7.9 (R2009b).
+This package contains MATLAB example scripts that demonstrate LabJack T7 and T4
+usage using the MATLAB .NET interface and LJM .NET assembly. Examples were
+tested with MATLAB 7.9 (R2009b).
 
 
 Requirements:
@@ -14,7 +14,7 @@ Requirements:
 2. MATLAB with .NET interface support. Version 7.8 (R2009a) or newer.
 3. LJM driver and .NET assembly. Both are provided by the Windows installer:
 
-http://labjack.com/support/software
+   https://labjack.com/support/software/installers
 
 
 Getting Started:
@@ -65,8 +65,8 @@ the following calls:
 
 The example scripts will provide additional help on MATLAB code and usage.
 
-General LJM and T7 documentation can be found here:
+General LJM, T7 and T4 documentation can be found here:
 
-http://labjack.com/support/ljm/users-guide
-http://labjack.com/support/datasheets/t7
-
+https://labjack.com/support/software/api/ljm
+https://labjack.com/support/datasheets/t7
+https://labjack.com/support/datasheets/t4
