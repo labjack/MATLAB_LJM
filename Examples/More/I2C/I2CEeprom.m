@@ -38,6 +38,10 @@ try
     showDeviceInfo(handle);
 
     if getDeviceType(handle) == LJM_CONSTANTS.dtT4
+        % Configure FIO4 and FIO5 as digital I/O.
+        LabJack.LJM.eWriteName(handle, 'DIO_INHIBIT', hex2dec('FFFCF'));
+        LabJack.LJM.eWriteName(handle, 'DIO_ANALOG_ENABLE', 0);
+
         % For the T4, using FIO4 and FIO5 for SCL and SDA pins. FIO0 to
         % FIO3 are reserved for analog inputs, and digital lines are
         % required.

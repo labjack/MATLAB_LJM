@@ -52,26 +52,56 @@ try
     % numAddresses*numScans in size.
     aData = NET.createArray('System.Double', numScans * numAddresses);
 
-    % Configure the analog inputs negative channel, range, settling time
-    % and resolution.
     % When streaming, negative channels and ranges can be configured for
     % individual analog inputs, but the stream has only one settling time
     % and resolution.
-    numAddressesConfig = 5;
-    aNames = NET.createArray('System.String', numAddressesConfig);
-    aNames(1) = 'AIN_ALL_NEGATIVE_CH';
-    aNames(2) = 'AIN0_RANGE';
-    aNames(3) = 'AIN1_RANGE';
-    aNames(4) = 'STREAM_SETTLING_US';
-    aNames(5) = 'STREAM_RESOLUTION_INDEX';
-    aValues = NET.createArray('System.Double', numAddressesConfig);
-    aValues(1) = LJM_CONSTANTS.GND;  % Single-ended
-    aValues(2) = 10.0;  % +/-10V
-    aValues(3) = 10.0;  % +/-10V
-    aValues(4) = 0;  % 0 (default)
-    aValues(5) = 0;  % 0 (default)
-    LabJack.LJM.eWriteNames(handle, numAddressesConfig, aNames, ...
-        aValues, -1);
+
+    numFrames = 0;
+    if getDeviceType(handle) == LJM_CONSTANTS.dtT4
+        % LabJack T4 configuration
+
+        % AIN0 and AIN1 ranges are +/-10 V, stream settling is 0 (default) and
+        % stream resolution index is 0 (default).
+        numFrames = 4;
+        aNames = NET.createArray('System.String', numFrames);
+        aNames(1) = 'AIN0_RANGE';
+        aNames(2) = 'AIN1_RANGE';
+        aNames(3) = 'STREAM_SETTLING_US';
+        aNames(4) = 'STREAM_RESOLUTION_INDEX';
+        aValues = NET.createArray('System.Double', numFrames);
+        aValues(1) = 10.0;
+        aValues(2) = 10.0;
+        aValues(3) = 0;
+        aValues(4) = 0;
+    else
+        % LabJack T7 and other devices configuration
+
+        % Ensure triggered stream is disabled.
+        LabJack.LJM.eWriteName(handle, 'STREAM_TRIGGER_INDEX', 0);
+
+        % Enabling internally-clocked stream.
+        LabJack.LJM.eWriteName(handle, 'STREAM_CLOCK_SOURCE', 0);
+
+        % All negative channels are single-ended, AIN0 and AIN1 ranges are
+        % +/-10 V, stream settling is 0 (default) and stream resolution index
+        % is 0 (default).
+        numFrames = 5;
+        aNames = NET.createArray('System.String', numFrames);
+        aNames(1) = 'AIN_ALL_NEGATIVE_CH';
+        aNames(2) = 'AIN0_RANGE';
+        aNames(3) = 'AIN1_RANGE';
+        aNames(4) = 'STREAM_SETTLING_US';
+        aNames(5) = 'STREAM_RESOLUTION_INDEX';
+        aValues = NET.createArray('System.Double', numFrames);
+        aValues(1) = LJM_CONSTANTS.GND;
+        aValues(2) = 10.0;
+        aValues(3) = 10.0;
+        aValues(4) = 0;
+        aValues(5) = 0;
+    end
+    % Write the analog inputs' negative channels (when applicable), ranges
+    % stream settling time and stream resolution configuration.
+   LabJack.LJM.eWriteNames(handle, numFrames, aNames, aValues, -1);
 
     disp('Scan list:')
     for i = 1:numAddresses

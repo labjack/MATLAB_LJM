@@ -69,7 +69,7 @@ try
         % Configure the analog input ranges
         numFrames = numAINs;
         rangeAINHV = 10.0;  % HV channels range (AIN0-AIN3)
-        rangeAINLV = 2.4;  % LV channels range (AIN4+)
+        rangeAINLV = 2.5;  % LV channels range (AIN4+)
         aNames = NET.createArray('System.String', numFrames);
         aValues = NET.createArray('System.Double', numFrames);
         for i = 1:numFrames
@@ -82,17 +82,14 @@ try
             end
         end
 
-        % Configure the analog input negative channels, stream settling
-        % times and stream settling time.
-        numFrames = 3;
+        % Configure the stream settling times and stream resolution index.
+        numFrames = 2;
         aNames = NET.createArray('System.String', numFrames);
-        aNames(1) = 'AIN_ALL_NEGATIVE_CH';
-        aNames(2) = 'STREAM_SETTLING_US';
-        aNames(3) = 'STREAM_RESOLUTION_INDEX';
+        aNames(1) = 'STREAM_SETTLING_US';
+        aNames(2) = 'STREAM_RESOLUTION_INDEX';
         aValues = NET.createArray('System.Double', numFrames);
-        aValues(1) = LJM_CONSTANTS.GND;  % Single-ended
+        aValues(1) = 0;  % 0 (default)
         aValues(2) = 0;  % 0 (default)
-        aValues(3) = 0;  % 0 (default)
         LabJack.LJM.eWriteNames(handle, numFrames, aNames, aValues, -1);
     else
         % T7 and other devices configuration
@@ -176,7 +173,7 @@ try
                     fprintf('\n  ')
                 end
             end
-            fprintf(['Scans Skipped = %d, Scan Backlogs: Device = %d,' ... 
+            fprintf(['Scans Skipped = %d, Scan Backlogs: Device = %d,' ...
                     ' LJM = %d\n'], (curSkippedSamples/numAddresses), ...
                     devScanBL, ljmScanBL)
         end

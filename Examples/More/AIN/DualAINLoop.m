@@ -35,32 +35,56 @@ try
     showDeviceInfo(handle);
 
     % Setup and call eWriteNames to configure AINs.
-    % AIN0 and AIN1:
-    %     Negative Channel = 199 (Single-ended)
-    %     Range = +/-10 V
-    %         T4 note: Only AIN0-AIN3 can support +/-10 V range.
-    %     Resolution index = 0 (default)
-    %         T7 note: 0 (default) is index 8, or 9 for Pro.
-    %     Settling = 0 (auto)
-    numFrames = 8;
-    names = NET.createArray('System.String', numFrames);
-    names(1) = 'AIN0_NEGATIVE_CH';
-    names(2) = 'AIN0_RANGE';
-    names(3) = 'AIN0_RESOLUTION_INDEX';
-    names(4) = 'AIN0_SETTLING_US';
-    names(5) = 'AIN1_NEGATIVE_CH';
-    names(6) = 'AIN1_RANGE';
-    names(7) = 'AIN1_RESOLUTION_INDEX';
-    names(8) = 'AIN1_SETTLING_US';
-    aValues = NET.createArray('System.Double', numFrames);
-    aValues(1) = 199;
-    aValues(2) = 10;
-    aValues(3) = 0;
-    aValues(4) = 0;
-    aValues(5) = 199;
-    aValues(6) = 10;
-    aValues(7) = 0;
-    aValues(8) = 0;
+    if getDeviceType(handle) == LJM_CONSTANTS.dtT4
+        % LabJack T4 configuration
+
+        % AIN0 and AIN1:
+        %     Range = +/-10 V. Only AIN0-AIN3 can support +/-10 V range.
+        %     Resolution index = 0 (default)
+        %     Settling = 0 (auto)
+        numFrames = 6;
+        names = NET.createArray('System.String', numFrames);
+        names(1) = 'AIN0_RANGE';
+        names(2) = 'AIN0_RESOLUTION_INDEX';
+        names(3) = 'AIN0_SETTLING_US';
+        names(4) = 'AIN1_RANGE';
+        names(5) = 'AIN1_RESOLUTION_INDEX';
+        names(6) = 'AIN1_SETTLING_US';
+        aValues = NET.createArray('System.Double', numFrames);
+        aValues(1) = 10;
+        aValues(2) = 0;
+        aValues(3) = 0;
+        aValues(4) = 10;
+        aValues(5) = 0;
+        aValues(6) = 0;
+    else
+        % LabJack T7 and other devices configuration
+
+        % AIN0 and AIN1:
+        %     Negative Channel = 199 (Single-ended)
+        %     Range = +/-10 V
+        %     Resolution index = 0 (default)
+        %     Settling = 0 (auto)
+        numFrames = 8;
+        names = NET.createArray('System.String', numFrames);
+        names(1) = 'AIN0_NEGATIVE_CH';
+        names(2) = 'AIN0_RANGE';
+        names(3) = 'AIN0_RESOLUTION_INDEX';
+        names(4) = 'AIN0_SETTLING_US';
+        names(5) = 'AIN1_NEGATIVE_CH';
+        names(6) = 'AIN1_RANGE';
+        names(7) = 'AIN1_RESOLUTION_INDEX';
+        names(8) = 'AIN1_SETTLING_US';
+        aValues = NET.createArray('System.Double', numFrames);
+        aValues(1) = 199;
+        aValues(2) = 10;
+        aValues(3) = 0;
+        aValues(4) = 0;
+        aValues(5) = 199;
+        aValues(6) = 10;
+        aValues(7) = 0;
+        aValues(8) = 0;
+    end
     LabJack.LJM.eWriteNames(handle, numFrames, names, aValues, 0);
 
     disp('Set configuration:');

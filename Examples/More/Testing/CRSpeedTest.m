@@ -44,7 +44,7 @@ try
     numAIN = 1;  % Number of analog inputs to read
     rangeAIN = 10.0;  % T7 AIN range
     rangeAINHV = 10.0;  % T4 HV range
-    rangeAINLV = 2.4;  % T4 LV range
+    rangeAINLV = 2.5;  % T4 LV range
     resolutionAIN = 1.0;
 
     % Digital settings
@@ -178,7 +178,7 @@ try
         disp(['    ' wrStr ' ' char(aNames(i))])
     end
     disp(['Performing ' num2str(numIterations) ' iterations...']);
- 
+
     % Initialize time variables
     maxMS = 0;
     minMS = 0;

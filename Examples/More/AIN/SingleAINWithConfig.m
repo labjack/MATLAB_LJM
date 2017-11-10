@@ -36,24 +36,42 @@ try
     showDeviceInfo(handle);
 
     % Setup and call eWriteNames to configure the AIN on the LabJack.
-    % AIN0:
-    %     Negative Channel = 199 (Single-ended)
-    %     Range = +/-10 V
-    %         T4 note: Only AIN0-AIN3 support the +/-10 V range.
-    %     Resolution index = 0 (default)
-    %         T7 note: 0 (default) is index 8, or 9 for Pro.
-    %     Settling = 0 (auto)
-    numFrames = 4;
-    aNames = NET.createArray('System.String', numFrames);
-    aNames(1) = 'AIN0_NEGATIVE_CH';
-    aNames(2) = 'AIN0_RANGE';
-    aNames(3) = 'AIN0_RESOLUTION_INDEX';
-    aNames(4) = 'AIN0_SETTLING_US';
-    aValues = NET.createArray('System.Double', numFrames);
-    aValues(1) = 199;
-    aValues(2) = 10;
-    aValues(3) = 0;
-    aValues(4) = 0;
+    if getDeviceType(handle) == LJM_CONSTANTS.dtT4
+        % LabJack T4 configuration
+
+        % AIN0:
+        %     Range = +/-10 V. Only AIN0-AIN3 can support +/-10 V range.
+        %     Resolution index = 0 (default)
+        %     Settling = 0 (auto)
+        numFrames = 3;
+        names = NET.createArray('System.String', numFrames);
+        names(1) = 'AIN0_RANGE';
+        names(2) = 'AIN0_RESOLUTION_INDEX';
+        names(3) = 'AIN0_SETTLING_US';
+        aValues = NET.createArray('System.Double', numFrames);
+        aValues(1) = 10;
+        aValues(2) = 0;
+        aValues(3) = 0;
+    else
+        % LabJack T7 and other devices configuration
+
+        % AIN0:
+        %     Negative Channel = 199 (Single-ended)
+        %     Range = +/-10 V
+        %     Resolution index = 0 (default)
+        %     Settling = 0 (auto)
+        numFrames = 4;
+        names = NET.createArray('System.String', numFrames);
+        names(1) = 'AIN0_NEGATIVE_CH';
+        names(2) = 'AIN0_RANGE';
+        names(3) = 'AIN0_RESOLUTION_INDEX';
+        names(4) = 'AIN0_SETTLING_US';
+        aValues = NET.createArray('System.Double', numFrames);
+        aValues(1) = 199;
+        aValues(2) = 10;
+        aValues(3) = 0;
+        aValues(4) = 0;
+    end
     LabJack.LJM.eWriteNames(handle, numFrames, aNames, aValues, 0);
 
     disp('Set configuration:');
