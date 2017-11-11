@@ -56,12 +56,11 @@ try
     % numAddresses*scansPerRead in size.
     aData = NET.createArray('System.Double', numAddresses*scansPerRead);
 
-    % When streaming, negative channels and ranges can be configured for
-    % individual analog inputs, but the stream has only one settling time
-    % and resolution.
-
     try
-        numFrames = 0;
+        % When streaming, negative channels and ranges can be configured for
+        % individual analog inputs, but the stream has only one settling time
+        % and resolution.
+
         if getDeviceType(handle) == LJM_CONSTANTS.dtT4
             % LabJack T4 configuration
 

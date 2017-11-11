@@ -56,7 +56,6 @@ try
     % individual analog inputs, but the stream has only one settling time
     % and resolution.
 
-    numFrames = 0;
     if getDeviceType(handle) == LJM_CONSTANTS.dtT4
         % LabJack T4 configuration
 

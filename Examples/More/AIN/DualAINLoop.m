@@ -43,13 +43,13 @@ try
         %     Resolution index = 0 (default)
         %     Settling = 0 (auto)
         numFrames = 6;
-        names = NET.createArray('System.String', numFrames);
-        names(1) = 'AIN0_RANGE';
-        names(2) = 'AIN0_RESOLUTION_INDEX';
-        names(3) = 'AIN0_SETTLING_US';
-        names(4) = 'AIN1_RANGE';
-        names(5) = 'AIN1_RESOLUTION_INDEX';
-        names(6) = 'AIN1_SETTLING_US';
+        aNames = NET.createArray('System.String', numFrames);
+        aNames(1) = 'AIN0_RANGE';
+        aNames(2) = 'AIN0_RESOLUTION_INDEX';
+        aNames(3) = 'AIN0_SETTLING_US';
+        aNames(4) = 'AIN1_RANGE';
+        aNames(5) = 'AIN1_RESOLUTION_INDEX';
+        aNames(6) = 'AIN1_SETTLING_US';
         aValues = NET.createArray('System.Double', numFrames);
         aValues(1) = 10;
         aValues(2) = 0;
@@ -66,15 +66,15 @@ try
         %     Resolution index = 0 (default)
         %     Settling = 0 (auto)
         numFrames = 8;
-        names = NET.createArray('System.String', numFrames);
-        names(1) = 'AIN0_NEGATIVE_CH';
-        names(2) = 'AIN0_RANGE';
-        names(3) = 'AIN0_RESOLUTION_INDEX';
-        names(4) = 'AIN0_SETTLING_US';
-        names(5) = 'AIN1_NEGATIVE_CH';
-        names(6) = 'AIN1_RANGE';
-        names(7) = 'AIN1_RESOLUTION_INDEX';
-        names(8) = 'AIN1_SETTLING_US';
+        aNames = NET.createArray('System.String', numFrames);
+        aNames(1) = 'AIN0_NEGATIVE_CH';
+        aNames(2) = 'AIN0_RANGE';
+        aNames(3) = 'AIN0_RESOLUTION_INDEX';
+        aNames(4) = 'AIN0_SETTLING_US';
+        aNames(5) = 'AIN1_NEGATIVE_CH';
+        aNames(6) = 'AIN1_RANGE';
+        aNames(7) = 'AIN1_RESOLUTION_INDEX';
+        aNames(8) = 'AIN1_SETTLING_US';
         aValues = NET.createArray('System.Double', numFrames);
         aValues(1) = 199;
         aValues(2) = 10;
@@ -85,18 +85,18 @@ try
         aValues(7) = 0;
         aValues(8) = 0;
     end
-    LabJack.LJM.eWriteNames(handle, numFrames, names, aValues, 0);
+    LabJack.LJM.eWriteNames(handle, numFrames, aNames, aValues, 0);
 
     disp('Set configuration:');
     for i = 1:numFrames
-        disp(['  ' char(names(i)) ': ' num2str(aValues(i))])
+        disp(['  ' char(aNames(i)) ': ' num2str(aValues(i))])
     end
 
     % Setup and call eReadNames to read AINs.
     numFrames = 2;
-    names = NET.createArray('System.String', numFrames);
-    names(1) = 'AIN0';
-    names(2) = 'AIN1';
+    aNames = NET.createArray('System.String', numFrames);
+    aNames(1) = 'AIN0';
+    aNames(2) = 'AIN1';
     aValues = NET.createArray('System.Double', numFrames);
 
     numReadings = 10;
@@ -105,9 +105,9 @@ try
           'with ' num2str(delay) ' second delay between readings:']);
 
     for i = 1:numReadings
-        LabJack.LJM.eReadNames(handle, numFrames, names, aValues, 0);
-        disp(['  ' char(names(1)) ': ' num2str(aValues(1)) ' V, ' ...
-              char(names(2)) ': ' num2str(aValues(2)) ' V'])
+        LabJack.LJM.eReadNames(handle, numFrames, aNames, aValues, 0);
+        disp(['  ' char(aNames(1)) ': ' num2str(aValues(1)) ' V, ' ...
+              char(aNames(2)) ': ' num2str(aValues(2)) ' V'])
         pause(delay);
     end
 catch e

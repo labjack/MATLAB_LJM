@@ -42,9 +42,10 @@ try
     numAINs = 8;  % Number of AINs to stream.
     firstAINChan = 0;  % Starting AIN channel. 0 = AIN0.
 
-    % Note when streaming, negative channels and ranges can be configured
+    % When streaming, negative channels and ranges can be configured
     % for individual analog inputs, but the stream has only one settling
     % time and resolution.
+
     if getDeviceType(handle) == LJM_CONSTANTS.dtT4
         % T4 configuration
 
