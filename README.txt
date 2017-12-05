@@ -1,11 +1,11 @@
 MATLAB - LJM .NET examples for Windows
-04/06/2017
+12/04/2017
 support@labjack.com
 
 
 This package contains MATLAB example scripts that demonstrate LabJack T7 and T4
-usage using the MATLAB .NET interface and LJM .NET assembly. Examples were
-tested with MATLAB 7.9 (R2009b).
+usage using the MATLAB .NET interface and LJM .NET assembly. Examples were last
+tested with MATLAB 9.1 (R2016b).
 
 
 Requirements:
@@ -65,8 +65,23 @@ the following calls:
 
 The example scripts will provide additional help on MATLAB code and usage.
 
-General LJM, T7 and T4 documentation can be found here:
+
+Documentation:
+
+General LJM library documentation can be found here:
 
 https://labjack.com/support/software/api/ljm
-https://labjack.com/support/datasheets/t7
-https://labjack.com/support/datasheets/t4
+
+All Modbus register addresses are documented here:
+
+https://labjack.com/support/software/api/modbus/modbus-map
+
+T7 and T4 documentation can be found here:
+
+https://labjack.com/support/datasheets/t-series
+
+
+Licenses:
+
+Provided LabJack example source code in this package are licensed under MIT
+X11. See the LICENSE.txt file for details.
